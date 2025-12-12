@@ -1,3 +1,4 @@
+import cors from 'cors'
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,7 +11,11 @@ const PORT = process.env.PORT || 3001
 
 app.use(
     cors({
-        origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173'
+        origin: [
+            'http://localhost:5173',
+            'https://life-planner-rpg.netlify.app'
+        ],
+        credentials: true
     })
 );
 
