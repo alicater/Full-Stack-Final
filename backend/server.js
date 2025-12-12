@@ -29,25 +29,7 @@ const User = require("./models/User");
 const Quest = require("./models/Quest")
 
 // Premade Quests
-const PREMADE_QUESTS = {
-    1: [
-        { name: "The Morning Ritual: Drink Water", questType: "DAILY" },
-        { name: "The First Step: Make Your Bed", questType: "MAIN" }
-    ],
-    2: [
-        { name: "The Scholar's Path: Read 5 Pages", questType: "DAILY" },
-        { name: "Forging the Body: 10 Minute Walk", questType: "MAIN" }
-    ],
-    3: [
-        { name: "Review the Map: Check Weekly Goals", questType: "DAILY" },
-        { name: "Kindness of the Hero: Send 1 Nice Text", questType: "MAIN" }
-    ],
-    4: [
-        { name: "Clear the Mind: 5 Minutes of Silence", questType: "DAILY" },
-        { name: "Clean the Armory: Tidy Desk/Workspace", questType: "MAIN" }
-    ],
-    // add more days here...
-};
+const {PREMADE_QUESTS} = require('./premadeQuests')
 
 // Middleware and Other Functions
 const generateToken = (id) => { // generates JWT
@@ -131,6 +113,7 @@ app.post('/api/auth/login', async(req, res) => {
         res.json({
             _id: user.id,
             username: user.username,
+            xp: user.xp,
             token: generateToken(user._id),
         });
     } else {
@@ -209,16 +192,47 @@ app.patch('/api/quests/:id/complete', protect, async (req, res) => {
       return res.status(401).json({ message: 'User not authorized to complete this quest' });
     }
 
+    // marks quest completed and gives xp
     const updatedQuest = await Quest.findByIdAndUpdate(
       req.params.id,
       { isCompleted: true, completionDate: Date.now() },
       { new: true }
     );
+    await User.findByIdAndUpdate(req.user.id, {$inc: {xp: 10}});
 
     res.status(200).json(updatedQuest);
   } catch (error) {
     res.status(500).json({ message: 'Server error updating quest' });
   }
+});
+
+// POST /api/quests/reset-day -- resets status of MAIN and DAILY quests only and sets xp to 0
+app.post('/api/quests/reset-day', protect, async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.user.id, { xp: 0 });
+        await Quest.updateMany(
+            {
+                userID: req.user.id,
+                questType: { $in: ['MAIN', 'DAILY'] } // targets only these two types
+            },
+            {
+                isCompleted: false, 
+                completionDate: null 
+            }
+        );
+
+        // 3. Return a success message
+        res.status(200).json({ message: 'Day reset successful. Quests are reactivated.' });
+    } catch (error) {
+        console.error("Error during quest reset:", error);
+        res.status(500).json({ message: 'Server error during day reset.' });
+    }
+});
+
+// GET /api/auth/me -- get's current user info
+app.get('/api/auth/me', protect, async (req, res) => {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
 });
 
 // GET /api/progress -- gets number of total quests and number of completed quests

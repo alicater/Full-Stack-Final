@@ -9,6 +9,7 @@ function Dashboard() {
     const [quests, setQuests] = useState([]);
     const [isLoading, setIsLoading] = useState(true); 
     const [currentDay, setCurrentDay] = useState(1);
+    const [xp, setXp] = useState(user?.xp || 0);
     const [progressStats, setProgress] = useState({ 
         totalQuests: 0, 
         completedQuests: 0 
@@ -21,10 +22,32 @@ function Dashboard() {
         return () => document.body.classList.remove('dashboard-body');
     }, []);
 
-    const resetDay = () => {
-        if (window.confirm("Are you sure you want to reset and erase all progress to Day 1?"))
-            setCurrentDay(1);
+    const resetDay = async () => {
+    if (window.confirm("Return to Day 1? Your XP will be reset to 0, and all Main quests will be reactivated.")) {
+        try {
+            await fetchWithAuth('/api/quests/reset-day', { method: 'POST' });
+            // updating user stats
+            setXp(0); 
+            setCurrentDay(1); // Set the day back to 1
+            setShowMenu(false);
+
+            fetchQuests(); 
+            fetchProgress();
+
+        } catch (error) {
+            console.error("Failed to reset day and XP:", error);
+        }
     }
+}
+
+    const fetchUserData = useCallback(async () => {
+        try {
+            const userData = await fetchWithAuth('/api/auth/me');
+            setXp(userData.xp);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [fetchWithAuth]);
 
     const fetchQuests = useCallback(async () => {
         setIsLoading(true);
@@ -51,8 +74,9 @@ function Dashboard() {
         if (user) {
             fetchQuests(); // gathers the quests
             fetchProgress(); // gathers the progress everytime user state/day changes
+            fetchUserData(); // gathers user xp
         }
-    }, [user, currentDay, fetchQuests, fetchProgress]);
+    }, [user, currentDay, fetchQuests, fetchProgress, fetchUserData]);
 
     // when quest list changes (completed or new day), resets view to the top
     useEffect(() => {
@@ -78,9 +102,18 @@ function Dashboard() {
     };
 
     // handles when quest is finished
-    const handleQuestCompleted = (completedQuestId) => {
+    const handleQuestCompleted = async (completedQuestId) => {
+        try {
+        await fetchWithAuth(`/api/quests/${completedQuestId}/complete`, {
+            method: 'PATCH',
+        });
         setQuests((prevQuests) => prevQuests.filter(q => q._id !== completedQuestId));
-        fetchProgress(); // updates progress immediately
+        setXp((prevXp) => prevXp + 10); 
+        fetchProgress(); 
+
+        } catch (error) {
+            console.error('Failed to complete quest:', error.message);
+        }
     };
 
     const nextDay = () => {
@@ -95,30 +128,31 @@ function Dashboard() {
 
     return (
         <>
-            {/* Header Bar */}
-            <div className="header-info">
-                <div className="user-stats">
-                    <p>User: {user?.username}</p>
-                    <p className="points">Points: 100XP</p>
+            {user && ( // wrapper makes sure the user name is loaded in header
+                <div className="header-info">
+                    <div className="user-stats">
+                        <p style={{marginLeft: '20px'}}>User: {user?.username}</p>
+                        <p className="points">Points: {xp} XP</p> 
+                    </div>
+                    
+                    <div className="day-indicator">
+                        Day {currentDay} / 14
+                    </div>
+                    
+                    <div className="profile-wrapper">
+                        <div className="profile-circle" onClick={() => setShowMenu(!showMenu)}></div>
+                        {showMenu && (
+                            <div className="profile-dropdown">
+                                <button onClick={resetDay}>Reset to Day 1</button>
+                                <button onClick={() => { window.location.href = '/login'; }}>
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                
-                <div className="day-indicator">
-                    Day {currentDay} / 14
-                </div>
-
-                {/* Profile circle with dropdown */}
-                <div style={{ position: 'relative' }}>
-                    <div className="profile-circle" onClick={() => setShowMenu(!showMenu)}></div>
-                    {showMenu && (
-                        <div className="profile-dropdown">
-                            <button onClick={resetDay}>Reset to Day 1</button>
-                            <button onClick={() => { window.location.href = '/login'; }}>
-                                Logout
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </div>
+            )}
+            
 
             {/* Main Dashboard Grid */}
             <div className="dashboard-grid"> 

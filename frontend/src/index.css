@@ -1,4 +1,4 @@
-/* --- 0. ROOT VARIABLES & FONT --- */
+/* --- Root Variables and Font --- */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IM+Fell+English+SC&display=swap');
 
 html, body {
@@ -6,8 +6,7 @@ html, body {
 }
 
 :root {
-  /* Colors derived from the image */
-  --color-green-panel: #496349; /* The dark green panel */
+  --color-green-panel: #496349; /*  Dark green panel */
   --color-xp-gold: #ffc300;     /* Gold accents */
   --color-paper: #fefcf3;       /* Aged paper */
 
@@ -15,6 +14,7 @@ html, body {
   --font-title: 'Cinzel', serif;
   --font-text: 'IM Fell English SC', serif;
 }
+
 
 /* --- Top-left Login/Register Links --- */
 .auth-nav-link {
@@ -36,7 +36,7 @@ html, body {
   color: var(--color-paper);
 }
 
-/* --- LOGIN / REGISTER SCREENS --- */
+/* --- Login/Register Screens --- */
 body.auth-body {
   background-image: url('/img/background.png');
   background-size: cover;
@@ -101,9 +101,9 @@ body.auth-body {
 }
 
 
-/* --- DASHBOARD SCREEN (Background) --- */
+/* --- Dashboard Screen --- */
 body.dashboard-body {
-  background-image: url('/img/dashboard.jpg');
+  background-image: url('/img/dashboard.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -114,7 +114,7 @@ body.dashboard-body {
   color: var(--color-paper);
 }
 
-/* Header Bar */
+/* --- Header Bar --- */
 .header-info {
   position: fixed;
   top: 0;
@@ -123,12 +123,12 @@ body.dashboard-body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
-  background-color: rgba(73, 99, 73, 0.9);
+  padding: 0 40px; 
+  background-color: rgba(73, 99, 73, 0.95); 
   backdrop-filter: blur(5px);
   z-index: 999;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  height: 40px;
+  height: 80px; 
 }
 
 .user-stats {
@@ -167,7 +167,7 @@ body.dashboard-body {
   flex: 1;
 }
 
-/* Desktop layout */
+/* --- Desktop layout --- */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 2fr 1fr; 
@@ -175,31 +175,27 @@ body.dashboard-body {
   gap: 25px;
   padding: 40px;
   position: relative;
-  min-height: calc(100vh - 40px); 
-  height: auto; 
+  margin-top: 80px; 
+  min-height: calc(100vh - 80px); 
+  height: auto;
 }
 
-/* Story Panel */
+/* --- Story Panel --- */
 .story-container {
   grid-column: 2;
   grid-row: 1;
   background-color: #d1bb78;
-  
-  /* FIX: Use auto so it grows with text */
   height: auto; 
-  min-height: 200px; /* Prevents it from being too small on short days */
-  
+  min-height: 200px; 
   border-radius: 10px;
   padding: 40px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  
-  /* Ensure text wraps nicely */
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-/* Next Quest */
+/* --- Next Quest --- */
 .next-quest-container {
   grid-column: 2;
   grid-row: 2;
@@ -211,7 +207,7 @@ body.dashboard-body {
   box-shadow: 0 4px 15px rgba(0,0,0,0.6);
 }
 
-/* Quest Board */
+/* --- Quest Board --- */
 .quest-board-container {
   grid-column: 1;
   grid-row: 1 / 3; 
@@ -223,6 +219,71 @@ body.dashboard-body {
   overflow-y: auto; 
 }
 
+.quest-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.quest-item {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+  font-size: 1.1em;
+  font-family: var(--font-title); 
+}
+
+.quest-name {
+    flex-grow: 1; 
+    margin-right: 20px; 
+    text-align: left;
+}
+
+/* Quest Form */
+.quest-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.quest-form input[type="text"] {
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-xp-gold); 
+    color: var(--color-paper);
+    font-family: var(--font-text);
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.quest-form button {
+    background-color: var(--color-xp-gold);
+    color: var(--color-green-panel);
+    font-family: var(--font-title);
+    font-size: 0.9em;
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.quest-form button:hover {
+    background-color: #ffda62;
+}
+
+/* Quest Form text */
+.quest-form input[type="text"]::placeholder {
+  color: var(--color-paper);
+  opacity: 0.8;
+  font-family: var(--font-title);
+}
+
+
+/* Buttons */
 .complete-button,
 .pivot-button {
   padding: 10px 20px;
@@ -242,7 +303,7 @@ body.dashboard-body {
   opacity: 0.8;
 }
 
-/* Progress Bar */
+/* --- Progress Bar --- */
 .progress-container {
   grid-column: 1 / 3;
   grid-row: 3;
@@ -269,11 +330,11 @@ body.dashboard-body {
 
 /* --- Profile Icon --- */
 .profile-circle {
-  position: absolute;
-  top: 20px;
-  right: 40px;
-  width: 65px;
-  height: 65px;
+  position: relative; 
+  top: auto; 
+  right: auto;
+  width: 50px; 
+  height: 50px;
   background-color: var(--color-green-panel);
   border-radius: 50%;
   cursor: pointer;
@@ -281,50 +342,66 @@ body.dashboard-body {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid var(--color-xp-gold); 
 }
 
-/* Silhouette icon */
 .profile-circle::before {
   content: "";
-  width: 55%;
-  height: 55%;
-  border: 3px solid var(--color-paper);
+  position: absolute;
+  top: 10px;
+  width: 50%;
+  height: 50%;
+  border: 2px solid var(--color-paper);
   border-radius: 50%;
   border-bottom: transparent;
 }
 
 .profile-circle::after {
-  content: "";
-  width: 35%;
+  content: ""; 
+  position: absolute; 
+  bottom: 8px; 
+  width: 70%; 
   height: 25%;
-  border: 3px solid var(--color-paper);
+  border: 2px solid var(--color-paper);
   border-radius: 50%;
   border-top: transparent;
-  position: relative;
-  top: -5px;
 }
 
 .profile-dropdown {
   position: absolute;
-  top: 100px;
-  right: 40px;
+  top: 60px;
+  right: 0;
+  width: 150px;
   background-color: var(--color-green-panel);
-  padding: 10px 20px;
+  border: 1px solid var(--color-xp-gold);
+  padding: 10px;
   border-radius: 8px;
-  z-index: 1000;
+  z-index: 1001;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Mobile Layout */
+.profile-dropdown button {
+    background: none;
+    border: none;
+    color: var(--color-paper);
+    font-family: var(--font-title);
+    cursor: pointer;
+    text-align: left;
+    padding: 5px;
+}
+.profile-dropdown button:hover {
+    color: var(--color-xp-gold);
+}
+
+/* --- Mobile Layout --- */
 @media (max-width: 900px) {
   .dashboard-grid {
     display: flex;
     flex-wrap: wrap !important;   
     justify-content: center;     
     min-height: calc(100vh - 40px); 
- 
   }
 
   .quest-board-container,
@@ -337,5 +414,17 @@ body.dashboard-body {
 
   .quest-board-container {
     overflow-y: visible;
+  }
+}
+
+/* -- Even Smaller Layout -- */
+@media (max-width: 550px) { 
+  .quest-item {
+    flex-direction: column; 
+    align-items: flex-start; 
+  }
+  
+  .quest-name {
+    margin-bottom: 5px;
   }
 }
