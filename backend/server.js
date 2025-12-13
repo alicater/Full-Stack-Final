@@ -230,7 +230,7 @@ app.post('/api/quests/reset-day', protect, async (req, res) => {
             }
         );
 
-        // 3. Return a success message
+        // Returns the success message
         res.status(200).json({ message: 'Day reset successful. Quests are reactivated.' });
     } catch (error) {
         console.error("Error during quest reset:", error);
