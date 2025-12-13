@@ -80,6 +80,11 @@ app.get("/", (req, res) => {
 
 // Authentication Routes
 
+// Temporary Debugging Route - Put this where your current login route is
+app.get('/api/test', (req, res) => {
+    res.status(200).json({ message: "API routes are reachable!" });
+});
+
 // POST /api/auth/register -- creates new user
 app.post('/api/auth/register', async (req, res) => {
     const {username, password} = req.body;
