@@ -191,9 +191,19 @@ function Dashboard() {
                 <div className="progress-container">
                     <h3>Progress</h3>
                     <div className="progress-bar-shell">
-                        <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }}>
-                            {progressPercent}% Complete
-                        </div>
+                        {/* Only renders progress bar if percent is more than 0 is*/}
+                        {progressPercent > 0 && (
+                            <div className="progress-bar-fill" style={{ width: `${progressPercent}%` }}>
+                                {progressPercent}% Complete
+                            </div>
+                        )}
+                        
+                        {/* displays the text when percent is 0 */}
+                        {progressPercent === 0 && (
+                            <div className="progress-text-overlay">
+                                {progressPercent}% Complete
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -80,7 +80,7 @@ app.get("/", (req, res) => {
 
 // Authentication Routes
 
-// Temporary Debugging Route - Put this where your current login route is
+// Debugging route 
 app.get('/api/test', (req, res) => {
     res.status(200).json({ message: "API routes are reachable!" });
 });
